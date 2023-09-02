@@ -10,3 +10,10 @@ if __name__ == '__main__':
     engine = create_engine('sqlite:///db/restaurants.db', echo=True)
     Session = sessionmaker(bind=engine)
     session = Session()
+customer_restaurants = Table(
+    "customer_restaurants",
+    Base.metadata,
+    Column("customer_id", ForeignKey("customers.id"), primary_key=True),
+    Column("restaurant_id", ForeignKey("restaurants.id"), primary_key=True),
+    extend_existing=True,
+)
