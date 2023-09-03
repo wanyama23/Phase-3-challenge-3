@@ -46,3 +46,26 @@ class Customer(Base):
         for review in reviews_to_delete:
             session.delete(review)
         session.commit()
+
+
+# ...............................class Restaurant...................
+
+class Restaurant(Base):
+    __tablename__ = 'restaurants'
+    id = Column(Integer(), primary_key=True)
+    name = Column(String())
+    price = Column(Integer())
+    reviews = relationship("Review", backref=backref ("restaurant"))
+    customers = relationship("Customer", secondary="customer_restaurants", back_populates="restaurants")
+    def __repr__(self):
+        return f'Restaurant: {self.name}'
+    def review(self):
+        return self.reviews
+    def customer(self):
+        return self.customers
+    @classmethod
+    def fanciest_restaurant(cls,session):
+        session = Session()
+        return session.query(cls).order_by(cls.price.desc()).first()
+    def all_reviews(self):
+        return f"Review for {self.restaurant().name} by {self.customer().full_name()}: {self.star_rating} stars."
