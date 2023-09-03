@@ -24,3 +24,25 @@ class Customer(Base):
     id = Column(Integer(), primary_key=True)
     first_name = Column(String())
     last_name = Column(String())
+    reviews = relationship("Review", backref=backref ("customer"))
+    restaurants = relationship("Restaurant",secondary="customer_restaurants", back_populates="customers")
+    def __repr__(self):
+        return f'Customer: {self.first_name}'
+    def customer_rev(self):
+        return self.reviews
+    def customer_rest(self):
+        return self.restaurants
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+    def favorite_restaurant(self):
+        favorite_restauran = session.query(Restaurant).order_by(Restaurant.star_rating.desc()).first()
+        return favorite_restauran
+    def add_review(self, restaurant,rating,session):
+        review = Review(customer=self, restaurant=restaurant, star_rating=rating)
+        session.add (review)
+        session.commit()
+    def delete_reviews(self, restaurant, session):
+        reviews_to_delete = [review for review in self.reviews if review.restaurant == restaurant]
+        for review in reviews_to_delete:
+            session.delete(review)
+        session.commit()
