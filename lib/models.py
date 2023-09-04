@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 if __name__ == '__main__':
-    engine = create_engine('sqlite:///db/restaurants.db', echo=True)
+    engine = create_engine('sqlite:///restaurants.db', echo=True)
     Session = sessionmaker(bind=engine)
     session = Session()
 customer_restaurants = Table(
